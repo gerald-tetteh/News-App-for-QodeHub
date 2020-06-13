@@ -1,3 +1,12 @@
+/*
+Author: Gerald Addo-Tetteh
+Name: News App
+
+This widget creats a list tile for all the 
+news items
+*/
+
+//importa
 import 'package:flutter/material.dart';
 
 import '../pages/detail.dart';
