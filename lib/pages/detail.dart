@@ -1,7 +1,21 @@
+/*
+Author: Gerald Addo-Tetteh
+Name: News App
+
+This page shows the details about the news items
+*/
+
+// imports
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/news_provider.dart';
+
+/*
+This widget recieves the id of the news item
+and uses the id to locate the news item from
+the provider file and renders the details of the item
+*/
 
 class DetailPage extends StatelessWidget {
   static const routeName = "/detail-page";
@@ -14,12 +28,17 @@ class DetailPage extends StatelessWidget {
     final id = ModalRoute.of(context).settings.arguments as String;
     final newsItem =
         Provider.of<NewsProvider>(context, listen: false).findById(id);
+    // error handling for missing data
     if (newsItem.imageUrl == null || newsItem.imageUrl.length <= 0) {
       _noImage = true;
     }
     if (newsItem.author == null || newsItem.author.length <= 0) {
       _noAuthor = true;
     }
+    /*
+    The widget shows the tile, author and image
+    of the news item.
+    */
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
@@ -32,11 +51,16 @@ class DetailPage extends StatelessWidget {
         ),
         title: Text(
           newsItem.title,
-          style: TextStyle(color: Colors.black),
+          style: TextStyle(
+            color: Colors.black,
+            fontSize: 18,
+          ),
         ),
         backgroundColor: Colors.white,
       ),
       body: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        // the expanded widget helps to maintain the height of the
+        // contents regardless of the screen size.
         Expanded(
           flex: 1,
           child: Container(
@@ -44,6 +68,7 @@ class DetailPage extends StatelessWidget {
             child: Image.network(
               _noImage ? defaultImage : newsItem.imageUrl,
               fit: BoxFit.cover,
+              // fades in the image once it is retrieved
               frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
                 if (wasSynchronouslyLoaded) {
                   return child;
@@ -63,6 +88,7 @@ class DetailPage extends StatelessWidget {
           child: Padding(
             padding: const EdgeInsets.all(12.0),
             child: Column(
+              // aligns the elements in the column from left to right
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Container(
