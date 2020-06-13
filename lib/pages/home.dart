@@ -9,9 +9,9 @@ This page shows the list of all news items
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'detail.dart';
 import '../providers/news_provider.dart';
 import '../errors/http_error.dart' as errorHadler;
+import '../widgets/news_item_builder.dart';
 
 class Home extends StatelessWidget {
   @override
@@ -84,65 +84,22 @@ class _NewsListItemsState extends State<NewsListItems> {
     _isint = false;
   }
 
+  Future<void> _refreshData(BuildContext context) async {
+    await Provider.of<NewsProvider>(context, listen: false).getNews();
+  }
+
   @override
   Widget build(BuildContext context) {
-    final newsItems =
-        Provider.of<NewsProvider>(context, listen: false).newsItems;
+    final newsItems = Provider.of<NewsProvider>(context).newsItems;
     // depending on the error or loading status a particluar widget
     // is diplayed with the help of the ternary operator.
     return _isLoading
         ? Center(child: CircularProgressIndicator())
         : _errorMessage != "no error"
             ? errorHadler.ErrorWidget(_errorMessage)
-            : ListView.builder(
-                itemCount: newsItems.length,
-                itemBuilder: (context, index) {
-                  var _noAuthor = false;
-                  if (newsItems[index].author == null ||
-                      newsItems[index].author.length <= 0) {
-                    _noAuthor = true;
-                  }
-                  // creates a list tile with a divider
-                  return Column(
-                    children: [
-                      ListTile(
-                        // the user is redirected to a different page
-                        // when the list tile is taped
-                        onTap: () => Navigator.of(context).pushNamed(
-                            DetailPage.routeName,
-                            arguments: newsItems[index].id),
-                        title: Text(
-                          newsItems[index].title,
-                          maxLines: 2,
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        subtitle: Padding(
-                          padding: const EdgeInsets.only(
-                            top: 10.0,
-                          ),
-                          child: Text(
-                            _noAuthor ? "Unknown" : newsItems[index].author,
-                            style: TextStyle(
-                              color: Colors.grey[500],
-                            ),
-                          ),
-                        ),
-                        trailing: const Icon(
-                          Icons.arrow_forward_ios,
-                          size: 20,
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(
-                          left: 15.0,
-                        ),
-                        child: const Divider(),
-                      ),
-                    ],
-                  );
-                },
+            : RefreshIndicator(
+                child: NewsItemBuilder(newsItems: newsItems),
+                onRefresh: () => _refreshData(context),
               );
   }
 }

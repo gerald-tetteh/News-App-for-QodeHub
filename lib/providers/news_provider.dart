@@ -65,6 +65,7 @@ class NewsProvider with ChangeNotifier {
       // any errors in the try block is caught in this block
       throw HttpError("Could not load data try again later");
     }
+    notifyListeners();
   }
 
   NewsItem findById(String id) {
