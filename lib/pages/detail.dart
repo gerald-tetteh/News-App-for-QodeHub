@@ -44,6 +44,17 @@ class DetailPage extends StatelessWidget {
             child: Image.network(
               _noImage ? defaultImage : newsItem.imageUrl,
               fit: BoxFit.cover,
+              frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
+                if (wasSynchronouslyLoaded) {
+                  return child;
+                }
+                return AnimatedOpacity(
+                  child: child,
+                  opacity: frame == null ? 0 : 1,
+                  duration: const Duration(seconds: 3),
+                  curve: Curves.easeOut,
+                );
+              },
             ),
           ),
         ),
