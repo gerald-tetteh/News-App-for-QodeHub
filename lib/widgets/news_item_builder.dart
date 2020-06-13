@@ -6,7 +6,7 @@ This widget creats a list tile for all the
 news items
 */
 
-//importa
+//imports
 import 'package:flutter/material.dart';
 
 import '../pages/detail.dart';
